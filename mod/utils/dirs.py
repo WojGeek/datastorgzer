@@ -1,45 +1,22 @@
-import os
 from pathlib import Path
-'''
-Proyecto: dsa
+import os
 
-    Organize files on any data storage
- 
-'''
-excluded = ['.themes','.config',
-            '.thunderbird','.cache','.local','.sane','.mozilla']
-
-def directory_choice():
-        choice = input('Indique la ruta del directorio: ')
-        return choice
-
-def accept_choice():
-     
-    choice = 'wrong'
+def isAlive():
+    return 'it works!'
     
-    while choice not in ['S','N']:
-        
-        choice = input("Inicia la organización de los archivos (S or N): ")
-        
-        if choice not in ['S','N']:
-            print("Lo siento, elija de nuevo S o N ")
-
-    if choice == 'S':
-        return True
-    else:
-        return False
-
-def listDir(dirpath):
+def getList(dirpath,excluded='None'):
 
     excluded_directories = 0
     results = []
     directory_quantity = 0
+    count = 0
 
     entries = Path(dirpath)
     for entry in entries.iterdir():
         #print(entry.name)
         if entry.is_dir():
-            print('{})'.format(entry))
+            count += 1
+            print('{}) {}'.format(count,entry))
             directory_quantity += 1
 
             # count the excluded directories
@@ -51,7 +28,7 @@ def listDir(dirpath):
     results.append(excluded_directories)
     return results
 
-def getDirCatalog(dirpath):
+def getDirCatalog(dirpath,excluded='None'):
 
     excluded_directories = 0
     directory_quantity = 0
@@ -110,37 +87,3 @@ def getDirCatalog(dirpath):
     results.append(excluded_directories)
     results.append(files_quantity)
     return results
-
-def main():
-
-        # entrada del directorio        
-        #dir = directory_choice()
-        dir = '/home/willians'
-        dir = '/media/willians/_sda5_'
-
-        # Seguro de proseguir?
-        #print(f'Ha elegido a {dir} como directorio raiz')
-
-        #if accept_choice():
-        print('Creando un catálogo de archivos')
-
-        
-
-        #stats = getDirCatalog(dir)
-        stats = listDir(dir)
-        print('Se imprime Catálogo y Estadísticas')
-        print(f'Total Sub-directorios: {stats[0]}')
-        print(f'Total directorios excluidos: {stats[1]}')
-
-            
-            
-
-        # else:
-        #     print('Bye')
-        
-        
-
-  
-
-if __name__ == '__main__':
-    main() 
