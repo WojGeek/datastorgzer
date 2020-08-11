@@ -3,6 +3,7 @@ import os
 from mod.utils import dirs
 from mod import dialog
 
+
 '''
 Proyecto: dsa
 
@@ -10,40 +11,34 @@ Proyecto: dsa
  
 '''
 excluded = ['.themes','.config',
-            '.thunderbird','.cache','.local','.sane','.mozilla']
+            '.thunderbird','.cache',
+            '.local','.sane','.mozilla',
+            '.ssh']
 
 def directory_choice():
         choice = input('Indique la ruta del directorio: ')
         return choice
 
-
-
-
 def main():
 
         # entrada del directorio        
       
-        dir = '/home/willians'
-        dir = '/home/wp'
-        dir = directory_choice()
+        dir = '/home/willians/tempo'
+        #dir = '/home/wp'
+        #dir = directory_choice()
 
         # Seguro de proseguir?
         print(f'Ha elegido a {dir} como directorio raiz')
 
-        if dialog.accept_choice():
+        if dialog.accept():
             print('Creando un catálogo de archivos')
-
-        
-
+      
             #stats = getDirCatalog(dir)
             print(dirs.isAlive())
             stats = dirs.getList(dir, excluded)
             print(f'Total Sub-directorios: {stats[0]}')
             print(f'Total directorios excluidos: {stats[1]}')
-        
-                
-            
-
+   
         # else:
         #     print('Bye')
         
