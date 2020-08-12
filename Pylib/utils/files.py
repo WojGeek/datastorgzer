@@ -27,11 +27,12 @@ def whichDestination(lastdate):
 
 def getLastModified(file):
 
-    try:
-        last_modified = time.ctime(os.path.getmtime(file))
-        return last_modified.split()
-    except:
-        return 'Date not found'
+    #try:
+    last_modified = time.ctime(os.path.getmtime(file))
+  
+    return last_modified.split()
+ #   except:
+ #       return 'Date not found'
 
 def getCreated(file):
 

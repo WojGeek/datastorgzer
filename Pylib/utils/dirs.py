@@ -64,12 +64,17 @@ def getList(dirpath,excluded='None',destpath='/tmp'):
                 dest_dir = files.whichDestination(lastmodified)
                 print(dest_dir)
                 # determines new destination on storage
-                dst = os.path.join(destpath,dest_dir)
-                print('last destination ', dst)
+                dstpath = os.path.join(destpath,dest_dir)
+                print('last destination ', dstpath)
                 
                 # verify destination 
-                if not uniqueDirectoryPath(dst):
-                    print("Destination not found: {} ".format(dst))
+                if not uniqueDirectoryPath(dstpath):
+                    print("Destination not found: {} ".format(dstpath))
+                    # create a new destination directory
+                    createDirectoryCluster(dstpath)
+                else:
+                    print("Destination found: {} ".format(dstpath))
+
 
 
 

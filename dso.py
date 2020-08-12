@@ -4,7 +4,7 @@ from Pylib.interface import dialog
 
 
 '''
-Proyecto: dsa
+Proyecto: Data storage arrangement
 
     Organize files on any data storage
  
@@ -21,7 +21,7 @@ def directory_choice():
 def main():
     print(dirs.isAlive())
 
-    dir_path = '/home/willians/tempo'
+    dir_path = '/home/wp/msa'
     #dir_path = directory_choice()
 
     # Seguro de proseguir?
