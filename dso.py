@@ -1,7 +1,6 @@
 import os
-#from pathlib import Path
-from mod.utils import dirs
-from mod import dialog
+from Pylib.utils import dirs
+from Pylib.interface import dialog
 
 
 '''
@@ -20,31 +19,25 @@ def directory_choice():
         return choice
 
 def main():
+    print(dirs.isAlive())
 
-        # entrada del directorio        
-      
-        dir = '/home/willians/tempo'
-        #dir = '/home/wp'
-        #dir = directory_choice()
+    dir_path = '/home/willians/tempo'
+    #dir_path = directory_choice()
 
-        # Seguro de proseguir?
-        print(f'Ha elegido a {dir} como directorio raiz')
+    # Seguro de proseguir?
+    print(f'Ha elegido el {dir_path} para organizar')
 
-        if dialog.accept():
-            print('Creando un catálogo de archivos')
-      
-            #stats = getDirCatalog(dir)
-            print(dirs.isAlive())
-            stats = dirs.getList(dir, excluded)
-            print(f'Total Sub-directorios: {stats[0]}')
-            print(f'Total directorios excluidos: {stats[1]}')
-   
-        # else:
-        #     print('Bye')
+    dest_path = '/tmp/'
+    print(f'Ha indicado como directorio destino la ruta en {dest_path}')
+
+    if dialog.accept():
+        stats = dirs.getList(dir_path, excluded, dest_path)
+        print(f'Total Sub-directorios: {stats[0]}')
+        print(f'Total directorios excluidos: {stats[1]}')
+    
+    
         
-        
-
-  
+ 
 
 if __name__ == '__main__':
     main() 
