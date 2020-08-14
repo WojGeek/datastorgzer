@@ -1,10 +1,11 @@
 from pathlib import Path
 import os
 import glob
-import shutil
+import shutil, errno
 from Pylib.utils import dirs
 from Pylib.utils import files
 from Pylib.dummy import hello
+from shutil import copytree
 
 
 
@@ -13,76 +14,85 @@ files_at_subdir = 0
 files_at_othersub = 0
 files_at_deeper = 0
 
-def createDestinationFiles(dir_path, dest_dir):
-    # see modification date 
-    #lstdest = os.path.join(root_path,dest_dir)
+def createDestinationFiles(dir_path, destroot_path):
+    
+    # get modification date from the dir or files
     lastmodified = files.getLastModified(dir_path)
-    print(lastmodified)
+    
+    #print(lastmodified)
+    
     ''' determines destination directory in
     order to organize the folder as a 
     chronological order '''
-    dest_dir = files.whichDestination(lastmodified)
-    print(dest_dir)
+    datesorted = files.whichDestination(lastmodified)
+    
     # determines new destination on storage
-    dstpath = os.path.join(dest_dir,dir_path)
-    print('last destination ', dstpath)
+    destinationsortedbydate = os.path.join(destroot_path, datesorted)
+    print('Destination sorted by date: ', destinationsortedbydate)
 
-    # verify destination 
-    if not dirs.uniqueDirectoryPath(dstpath):
-        print("Destination not found: {} ".format(dstpath))
-        # create a new destination directory
-        dirs.createDirectoryCluster(dstpath)
-    else:
-        print("Destination found: {} ".format(dstpath))
+    # verify destination root
+    # if not dirs.uniqueDirectoryPath(destinationsortedbydate):
+    #     #print("Destination not found: {} ".format(destinationsortedbydate))
+    #     # create a new destination directory
+    #     dirs.createDirectoryCluster(destinationsortedbydate)
+    # else:
+    #     #print("Destination found: {} ".format(destinationsortedbydate))
+    #     pass
+    #copyFiles(path, dst)
+    return destinationsortedbydate
 
+def tree(source_directory, destinationRootPath):
+    print(f'Sorting the Directory  {source_directory}')
 
-def tree(directory):
-    print(f'* {directory}')
-    for path in sorted(directory.rglob('*')):
-        depth = len(path.relative_to(directory).parts)
+    for path in sorted(source_directory.rglob('*')):
+        depth = len(path.relative_to(source_directory).parts)
         spacer = '  ' * depth
-        #print(f'{spacer}+ {path.name}')
-        #print("path: {}".format(path.relative_to(directory)))
-   
-
-        #print('Parent: ',path.parent)
-        #print('Depth: ',depth)
-        spc = '>>>' * depth
+      
+        spc = ' +' * depth
         if path.is_dir():
             #print(f"{spc} DIR: {path} at level {depth}")
-            print(f"{spc}{depth}) Folder: {path}")
+            print(f"{spc} Folder: {path}  ")
         else:
             #print("\t\__ {} \n\t \_ at {}".format(path.name,path.parent))
             print("\t\_ {} \t ".format(path.name))
 
-        #createDestinationFiles(path, rp)
+        dst = createDestinationFiles(path, destinationRootPath)
+
+        if path.is_dir():
+           print(f"{spc} Copying {path} to {dst} ")
+           #copyFilesInSortedWay(path, dst) 
        
+def copyFiles(source, destination):
+    try:
+        shutil.copytree(source, destination) 
+    except FileExistsError:
+        print(f'Already copied {source}')
+    except PermissionError:
+        print(f'Permission denied on {source}')
+ 
+def copyFilesInSortedWay(source, destination):
+    try:
+        shutil.copytree(source, destination)
+    except FileExistsError:
+        print(f'Already copied {source}')
+    except PermissionError:
+        print(f'Permission denied on {source}')
+    except FileNotFoundError:
+        print(f' {source} not found ')
+    except OSError as exc: # python >2.5
+        if exc.errno == errno.ENOTDIR:
+            shutil.copy(source, destination)
+        else: raise
+    
 
-        #lastmodified = files.getLastModified(path.name)
-        #print(lastmodified)
-        
 
 
+# Source directory where files will be sorted
+path = os.path.join(os.getcwd(),'/home/wp')
+sourcepath = Path(path)
 
-#path = Path.cwd() # current dir
-#home = Path.home() # root
+# Destination path to save the sorted files
+destinationrootpath = '/tmp'
 
-#print(path)
-#print(home)
+tree(sourcepath, destinationrootpath)
 
-# source
-rootpath = os.path.join(os.getcwd(),'model')
-#dirpath = os.getcwd()'modelo'
-rp = Path(rootpath)
-
-# destination
-
-tree(rp)
-
-#print(dirs.isAlive())
-#hello.coder()
-print()
-print(f'Root: {files_at_root}')
-print(f'Subdir: {files_at_subdir}')
-print(f'Under subdir: {files_at_othersub}')
-print(f'Deeper: {files_at_deeper}')
