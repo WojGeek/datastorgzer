@@ -4,7 +4,7 @@ import glob
 import shutil, errno
 from Pylib.utils import dirs
 from Pylib.utils import files
-from Pylib.dummy import hello
+from Pylib.interface import dialog
 from shutil import copytree
 
 
@@ -28,7 +28,7 @@ def createDestinationFiles(dir_path, destroot_path):
     
     # determines new destination on storage
     destinationsortedbydate = os.path.join(destroot_path, datesorted)
-    print('Destination sorted by date: ', destinationsortedbydate)
+    #print('Destination sorted by date: ', destinationsortedbydate)
 
     # verify destination root
     # if not dirs.uniqueDirectoryPath(destinationsortedbydate):
@@ -46,21 +46,22 @@ def tree(source_directory, destinationRootPath):
 
     for path in sorted(source_directory.rglob('*')):
         depth = len(path.relative_to(source_directory).parts)
-        spacer = '  ' * depth
-      
+           
         spc = ' +' * depth
         if path.is_dir():
             #print(f"{spc} DIR: {path} at level {depth}")
             print(f"{spc} Folder: {path}  ")
         else:
-            #print("\t\__ {} \n\t \_ at {}".format(path.name,path.parent))
-            print("\t\_ {} \t ".format(path.name))
+           #print("\t\_ {} \t ".format(path.name))
+           pass
 
         dst = createDestinationFiles(path, destinationRootPath)
 
-        if path.is_dir():
-           print(f"{spc} Copying {path} to {dst} ")
-           #copyFilesInSortedWay(path, dst) 
+        #if path.is_dir():
+        #print(f"{spc} Copying {path} to {dst} ")
+        copyFilesInSortedWay(path, dst) 
+
+        
        
 def copyFiles(source, destination):
     try:
@@ -71,10 +72,17 @@ def copyFiles(source, destination):
         print(f'Permission denied on {source}')
  
 def copyFilesInSortedWay(source, destination):
+    
     try:
-        shutil.copytree(source, destination)
+        if not os.path.exists(destination):
+            print(f"Copying {source} to {destination} ")
+            if source.is_dir():
+                shutil.copytree(source, destination)
+            else:
+                shutil.copy(source, destination)
+                print('DESTINATION: ', destination)
     except FileExistsError:
-        print(f'Already copied {source}')
+        print(f'Already copied {filepath}')
     except PermissionError:
         print(f'Permission denied on {source}')
     except FileNotFoundError:
@@ -88,11 +96,30 @@ def copyFilesInSortedWay(source, destination):
 
 
 # Source directory where files will be sorted
-path = os.path.join(os.getcwd(),'/home/wp')
+path = os.path.join(os.getcwd(),'model')
 sourcepath = Path(path)
+print(f'Directorio: {sourcepath} ')
 
 # Destination path to save the sorted files
 destinationrootpath = '/tmp'
 
-tree(sourcepath, destinationrootpath)
+
+#while True:
+
+sort_files = input('Start? Yes or No ')
+
+if sort_files.lower()[0] == 'y':
+    sorting_on = True
+else:
+    sorting_on = False
+
+while sorting_on:
+
+    tree(sourcepath, destinationrootpath)
+    sorting_on = False
+
+        # if not dialog.accept():
+        #     break
+    
+
 
