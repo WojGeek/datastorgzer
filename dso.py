@@ -21,7 +21,7 @@ def directory_choice():
 def main():
     print(dirs.isAlive())
 
-    dir_path = '/home/wp/msa'
+    dir_path = '/home/willians/datastorgzer/model2'
     #dir_path = directory_choice()
 
     # Seguro de proseguir?

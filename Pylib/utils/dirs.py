@@ -41,40 +41,46 @@ def getList(dirpath,excluded='None',destpath='/tmp'):
     results = []
     directory_quantity = 0
     count = 0
+    try:
+        entries = Path(dirpath)
+        for entry in entries.iterdir():
+            #print(entry.name)
+            if entry.is_dir():
+                count += 1
+                print('{}) {}'.format(count,entry))
+                directory_quantity += 1
 
-    entries = Path(dirpath)
-    for entry in entries.iterdir():
-        #print(entry.name)
-        if entry.is_dir():
-            count += 1
-            print('{}) {}'.format(count,entry))
-            directory_quantity += 1
+                # count the excluded directories
+                if entry.name in excluded:
+                    print(f'EXCLUDE: {entry.name}')
+                    excluded_directories += 1
+                else: 
+                    # see modification date 
+                    lastmodified = files.getLastModified(entry)
+                    #print(lastmodified)
 
-            # count the excluded directories
-            if entry.name in excluded:
-                print(f'EXCLUDE: {entry.name}')
-                excluded_directories += 1
-            else: 
-                # see modification date 
-                lastmodified = files.getLastModified(entry)
-                print(lastmodified)
-                ''' determines destination directory in
-                order to organize the folder as a 
-                chronological order '''
-                dest_dir = files.whichDestination(lastmodified)
-                print(dest_dir)
-                # determines new destination on storage
-                dstpath = os.path.join(destpath,dest_dir)
-                print('last destination ', dstpath)
-                
-                # verify destination 
-                if not uniqueDirectoryPath(dstpath):
-                    print("Destination not found: {} ".format(dstpath))
-                    # create a new destination directory
-                    createDirectoryCluster(dstpath)
-                else:
-                    print("Destination found: {} ".format(dstpath))
 
+                    ''' determines destination directory in
+                    order to organize the folder as a 
+                    chronological order '''
+                    dest_dir = files.whichDestination(lastmodified)
+                    #print(dest_dir)
+
+
+                    # determines new destination on storage
+                    sourcedir = dirpath.replace('/', '_')
+                    dstpath = os.path.join(destpath,dest_dir,sourcedir)
+                    print('last destination ', dstpath)
+                    
+                    # verify destination 
+                    if not uniqueDirectoryPath(dstpath):
+                        print("Destination not found: {} ".format(dstpath))
+                        # create a new destination directory
+                        createDirectoryCluster(dstpath)
+                    else:
+                        print("Destination found: {} ".format(dstpath))
+    except FileNotFoundError:
+            print('[Errno 2] No such file or directory')
 
 
 

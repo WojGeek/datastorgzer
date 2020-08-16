@@ -14,7 +14,7 @@ files_at_subdir = 0
 files_at_othersub = 0
 files_at_deeper = 0
 
-def createDestinationFiles(dir_path, destroot_path):
+def fileDestinationPath(dir_path, destroot_path):
     
     # get modification date from the dir or files
     lastmodified = files.getLastModified(dir_path)
@@ -44,32 +44,70 @@ def createDestinationFiles(dir_path, destroot_path):
 def tree(source_directory, destinationRootPath):
     print(f'Sorting the Directory  {source_directory}')
 
-    for path in sorted(source_directory.rglob('*')):
-        depth = len(path.relative_to(source_directory).parts)
-           
+    sourcedir = source_directory.replace('/', '_')
+    directory = Path(source_directory)
+
+    #for path in sorted(directory.rglob('*')):
+    for path in directory.rglob('*'):
+        depth = len(path.relative_to(directory).parts)
+        
+    
+        # destination path within sorted directory
+        dst = fileDestinationPath(path, destinationRootPath)
+
+        #source_root = source_directory.split()
+        #print(source_root)
+        
+        p = path.name
+        print(p)
+        
+        abspathfile = []
+        
+        abspathfile.append(dst)
+        abspathfile.append(sourcedir)
+        abspathfile.append(p)
+     
+        #print(abspathfile)
+        abs_dstpath = abspathfile[0]+'/'+abspathfile[1]+'/'+abspathfile[-1]
+        #print('*'*25)
+        #print(abs_dstpath)
+        print('*'*25)
+        #abspathfile = os.path.join(dst,sourcedir, path)
+        #print("--> ", abspathfile)
+        parent = os.path.dirname(path)
+        print(f'PARENT: ',parent)
+        
+
         spc = ' +' * depth
         if path.is_dir():
-            #print(f"{spc} DIR: {path} at level {depth}")
-            print(f"{spc} Folder: {path}  ")
+            print(f'1) Create DESTINATION Root: {dst} ')
+            print(f'2) Create DIR as: {path}')
+            print(f'3) SEND THIS ABSOLUTE PATH: {dst}{path}')
+            #print(f'3) SEND THIS ABSOLUTE PATH: {os.path.join(dst,os.path.dirname(path),path)}')
+            print(f'3.1) Send this ABSOLUTE Path: {abs_dstpath}')
+            print(f"DIRECTORY DEPTH IS : {depth}")
+            print(f"PATH.NAME: {path.name}")
+            #dirs.createDirectoryCluster(abspathfile)
+                      
         else:
-           #print("\t\_ {} \t ".format(path.name))
-           pass
-
-        dst = createDestinationFiles(path, destinationRootPath)
-
+            print(f'1) Create DESTINATION Root: {dst} ')
+            print(f'2) Save File into: {path}')
+            print(f'3) SEND THIS ABSOLUTE PATH: {dst}{path}')
+            print(f'3.1) Send this abolute Path: {abs_dstpath}')
+            #print(f"DIRECTORY DEPTH IS : {depth}")
+            #print(f"PATH.NAME: {path.name}")
+            
+            # print(f"SAVE FILE into: {path} \n DEPTH:" + 
+            # f"{depth} \n PATH: {dst} \n PATHNAME: {path.name} ")
+            
+        # print(f" ABS PATHFILE: {abspathfile} \n ")
+        
+   
         #if path.is_dir():
-        #print(f"{spc} Copying {path} to {dst} ")
-        copyFilesInSortedWay(path, dst) 
+        # print(f"{spc} Copying {abspathfile} into {dst} ")
+        #copyFilesInSortedWay(abspathfile, dst) 
 
         
-       
-def copyFiles(source, destination):
-    try:
-        shutil.copytree(source, destination) 
-    except FileExistsError:
-        print(f'Already copied {source}')
-    except PermissionError:
-        print(f'Permission denied on {source}')
  
 def copyFilesInSortedWay(source, destination):
     
@@ -96,8 +134,9 @@ def copyFilesInSortedWay(source, destination):
 
 
 # Source directory where files will be sorted
-path = os.path.join(os.getcwd(),'model')
-sourcepath = Path(path)
+#path = os.path.join(os.getcwd(),'model')
+
+sourcepath = '/home/willians/datastorgzer/model3'
 print(f'Directorio: {sourcepath} ')
 
 # Destination path to save the sorted files
