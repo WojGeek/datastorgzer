@@ -4,23 +4,24 @@ from Pylib.utils import files
 
 def isAlive():
     return "Module: _dirs_ it works!"
-    
-def createDirectoryCluster(dirpath):
-    lastpath = '/'
-    created = False
+
+
+
+def createDirectoryTreeDatebased(directory_path):
+
+    new_directory = '/'
     try:
-        for d in dirpath.split('/'):
+        for dpath in directory_path.split('/'):
             # handle instances of // in string
-            if not d:
+            if not dpath:
                 continue 
 
-            lastpath += d + '/'
+            new_directory += dpath + '/'
 
-            if not os.path.isdir(lastpath):
-                os.mkdir(lastpath)
-                created = True
+            if not os.path.isdir(new_directory):
+                os.mkdir(new_directory)
 
-        return lastpath
+        return new_directory
 
     except PermissionError as e:
         print("Error wth directory!\r\n" +

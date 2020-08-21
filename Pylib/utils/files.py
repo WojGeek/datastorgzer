@@ -1,9 +1,44 @@
 import time
 from pathlib import Path
+from Pylib.utils import files
+from shutil import copytree
+import shutil, errno
 
 fileNotFound = 'file not found'
 checkFileName = 'check file name'
 #  PENDIENTE EVALUAR EL USO DE DICCIONARIO PARA ESTOS MENSAJES
+
+def copyFiles(source, destination):
+    try:
+        if os.path.isfile(destination):
+            print(f'File already copied {destination}')
+        else:
+            shutil.copy2(source, destination,follow_symlinks=True)
+            print(f"Copied {source} to {destination} ")
+        
+    except FileNotFoundError as e: 
+        print("Error with \r\n".format(source) +
+        "Error number: {0}\r\n".format(e.errno) +
+        "Error text: {0}".format(e.strerror))
+    
+    except FileExistsError:
+        print(f'Already copied {destination}')
+
+def fileDestinationPath(dir_path, destroot_path):
+    
+    # get modification date from the dir or files
+    lastmodified = files.getLastModified(dir_path)
+    
+    ''' determines destination directory in
+    order to organize the folder as a 
+    chronological order '''
+    datesorted = files.whichDestination(lastmodified)
+    
+    # determines new destination on storage
+    destinationsortedbydate = os.path.join(destroot_path, datesorted)
+ 
+    return destinationsortedbydate
+
 
 def isFoundDestination(dirpath):
     destination_root = Path(dirpath)
